@@ -1,0 +1,21 @@
+{
+  "name": "create-instantsearch-app-templates",
+  "version": "1.0.0",
+  "description": "List of the sandboxes made by Create InstantSearch app",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "holen": "2.0.1",
+    "react": "16.3.2",
+    "react-dom": "16.3.2",
+    "react-request": "3.1.2",
+    "react-scripts": "1.1.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

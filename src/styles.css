@@ -1,0 +1,145 @@
+:root {
+  --monospace: 'Fira Code', 'Courier New', Courier, monospace;
+  --sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Helvetica Neue', sans-serif;
+}
+body {
+  font-family: var(--sans-serif);
+  margin: 0;
+  background-color: rgb(242, 242, 242);
+}
+
+pre,
+code {
+  font-family: var(--monospace);
+}
+
+img {
+  max-width: 100%;
+}
+
+main {
+  padding: 0 1em;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0.5rem 1rem;
+  background-image: linear-gradient(284deg, #fedd4e, #fcb43a);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+.header-title::after {
+  content: ' ▸ ';
+  padding: 0 0.5rem;
+}
+
+.header-subtitle {
+  font-size: 1.2rem;
+}
+
+.error {
+  text-align: center;
+  margin: 2em;
+}
+
+.error code {
+  border-bottom: 1px solid red;
+}
+
+.listing {
+  --cols: 1;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-auto-flow: row;
+  grid-gap: 1.5em;
+  grid-row-gap: 2em;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-auto-columns: fit-content(40px);
+}
+
+@media (min-width: 300px) {
+  .listing {
+    --cols: 2;
+  }
+}
+
+@media (min-width: 400px) {
+  .listing {
+    --cols: 3;
+  }
+}
+
+@media (min-width: 600px) {
+  .listing {
+    --cols: 4;
+  }
+}
+
+@media (min-width: 800px) {
+  .listing {
+    --cols: 5;
+  }
+}
+
+@media (min-width: 1000px) {
+  .listing {
+    --cols: 6;
+  }
+}
+
+.listing-item {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+}
+
+.sandbox {
+  height: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 0.2em;
+  padding: 0.5em;
+  background-color: white;
+}
+
+.sandbox.native {
+  --length: 1em;
+  background: repeating-linear-gradient(
+    45deg,
+    white,
+    white var(--length),
+    #fedd4e var(--length),
+    #fedd4e calc(2 * var(--length))
+  );
+}
+
+.sandbox a {
+  height: inherit;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.sandbox img {
+  margin-top: 0.5em;
+}
