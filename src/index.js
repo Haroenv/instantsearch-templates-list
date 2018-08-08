@@ -61,8 +61,15 @@ const dataToSandboxes = data =>
         .replace(/iOS/i, 'iOS'),
       url: html_url.replace('github.com', 'codesandbox.io/s/github'),
       native: nativeLibraries.includes(name),
+      instantsearch: name.includes('instantsearch'),
       repo: html_url,
-    }));
+    }))
+    .sort(
+      (a, b) =>
+        a.native === b.native
+          ? b.instantsearch - a.instantsearch
+          : a.native - b.native
+    );
 
 const Listing = ({ data }) => (
   <ul className="listing">
