@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { Fetch } from 'react-request';
 import './styles.css';
 
+console.log('test out now.sh');
+
 const url =
   'https://api.github.com/repos/algolia/create-instantsearch-app/contents?ref=templates';
 
