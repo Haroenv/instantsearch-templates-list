@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-import Holen from 'holen';
 import { Fetch } from 'react-request';
 import './styles.css';
 
@@ -12,7 +11,11 @@ const Error = ({ failed, error, data }) =>
     <div className="error">
       Error:{' '}
       <code>
-        {error ? error.message : data ? data.message : 'unknown'}
+        {error
+          ? error.message
+          : data
+            ? data.message
+            : 'unknown'}
       </code>
     </div>
   ) : null;
@@ -25,7 +28,8 @@ const images = {
   'instantsearch.js': 'instantsearch.js.svg',
   'javascript-client': undefined,
   'javascript-helper': undefined,
-  'react-instantsearch-native': 'react-instantsearch.svg',
+  'react-instantsearch-native':
+    'react-instantsearch.svg',
   'react-instantsearch': 'react-instantsearch.svg',
   'vue-instantsearch': 'vue-instantsearch.svg',
   fallback: 'algolia.svg',
@@ -34,7 +38,10 @@ const Sandbox = ({ name, url, id, native, repo }) => (
   <div className={`sandbox ${native ? 'native' : ''}`}>
     <a href={native ? repo : url} target="_blank">
       {name}
-      <img src={images[id] || images.fallback} alt="logo" />
+      <img
+        src={images[id] || images.fallback}
+        alt="logo"
+      />
     </a>
   </div>
 );
@@ -55,27 +62,36 @@ const dataToSandboxes = data =>
         .replace('instantsearch', 'InstantSearch')
         .replace('javascript', 'JavaScript')
         .split(' ')
-        .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
+        .map(
+          s =>
+            s.slice(0, 1).toLocaleUpperCase() +
+            s.slice(1)
+        )
         .join(' ')
         .replace('Ios', 'iOS'),
-      url: html_url.replace('github.com', 'codesandbox.io/s/github'),
+      url: html_url.replace(
+        'github.com',
+        'codesandbox.io/s/github'
+      ),
       native: nativeLibraries.includes(name),
       repo: html_url,
     }));
 
 const Listing = ({ data }) => (
   <ul className="listing">
-    {dataToSandboxes(data).map(({ name, url, id, native, repo }) => (
-      <li key={name} className="listing-item">
-        <Sandbox
-          name={name}
-          url={url}
-          id={id}
-          native={native}
-          repo={repo}
-        />
-      </li>
-    ))}
+    {dataToSandboxes(data).map(
+      ({ name, url, id, native, repo }) => (
+        <li key={name} className="listing-item">
+          <Sandbox
+            name={name}
+            url={url}
+            id={id}
+            native={native}
+            repo={repo}
+          />
+        </li>
+      )
+    )}
   </ul>
 );
 
@@ -89,15 +105,19 @@ const App = () => (
     </header>
     <main>
       <p>
-        All the Create InstantSearch App templates available on
-        CodeSandbox here:
+        All the Create InstantSearch App templates
+        available on CodeSandbox here:
       </p>
       <Fetch url={url}>
         {({ data, error, failed }) =>
           !failed && data ? (
             <Listing data={data} />
           ) : (
-            <Error error={error} data={data} failed={failed} />
+            <Error
+              error={error}
+              data={data}
+              failed={failed}
+            />
           )
         }
       </Fetch>

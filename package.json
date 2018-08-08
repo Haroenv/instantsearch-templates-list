@@ -5,7 +5,6 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
-    "holen": "2.0.1",
     "react": "16.3.2",
     "react-dom": "16.3.2",
     "react-request": "3.1.2",
