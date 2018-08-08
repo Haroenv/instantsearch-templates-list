@@ -44,19 +44,21 @@ const nativeLibraries = [
   'react-instantsearch-native',
 ];
 
+const titleCase = str =>
+  str
+    .split('-')
+    .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
+    .join(' ');
+
 const dataToSandboxes = data =>
   data
     .filter(({ type }) => type === 'dir')
     .map(({ html_url, name }) => ({
       id: name,
-      name: name
-        .replace(/-/g, ' ')
-        .replace('instantsearch', 'InstantSearch')
-        .replace('javascript', 'JavaScript')
-        .split(' ')
-        .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
-        .join(' ')
-        .replace('Ios', 'iOS'),
+      name: titleCase(name)
+        .replace(/InstantSearch/i, 'InstantSearch')
+        .replace(/JavaScript/i, 'JavaScript')
+        .replace(/iOS/i, 'iOS'),
       url: html_url.replace('github.com', 'codesandbox.io/s/github'),
       native: nativeLibraries.includes(name),
       repo: html_url,
