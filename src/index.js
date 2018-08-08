@@ -9,7 +9,10 @@ const url =
 const Error = ({ failed, error, data }) =>
   failed ? (
     <div className="error">
-      Error: <code>{error ? error.message : data ? data.message : 'unknown'}</code>
+      Error:{' '}
+      <code>
+        {error ? error.message : data ? data.message : 'unknown'}
+      </code>
     </div>
   ) : null;
 
@@ -42,26 +45,34 @@ const nativeLibraries = [
 ];
 
 const dataToSandboxes = data =>
-  data.filter(({ type }) => type === 'dir').map(({ html_url, name }) => ({
-    id: name,
-    name: name
-      .replace(/-/g, ' ')
-      .replace('instantsearch', 'InstantSearch')
-      .replace('javascript', 'JavaScript')
-      .split(' ')
-      .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
-      .join(' ')
-      .replace('Ios', 'iOS'),
-    url: html_url.replace('github.com', 'codesandbox.io/s/github'),
-    native: nativeLibraries.includes(name),
-    repo: html_url,
-  }));
+  data
+    .filter(({ type }) => type === 'dir')
+    .map(({ html_url, name }) => ({
+      id: name,
+      name: name
+        .replace(/-/g, ' ')
+        .replace('instantsearch', 'InstantSearch')
+        .replace('javascript', 'JavaScript')
+        .split(' ')
+        .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
+        .join(' ')
+        .replace('Ios', 'iOS'),
+      url: html_url.replace('github.com', 'codesandbox.io/s/github'),
+      native: nativeLibraries.includes(name),
+      repo: html_url,
+    }));
 
 const Listing = ({ data }) => (
   <ul className="listing">
     {dataToSandboxes(data).map(({ name, url, id, native, repo }) => (
       <li key={name} className="listing-item">
-        <Sandbox name={name} url={url} id={id} native={native} repo={repo} />
+        <Sandbox
+          name={name}
+          url={url}
+          id={id}
+          native={native}
+          repo={repo}
+        />
       </li>
     ))}
   </ul>
@@ -76,7 +87,10 @@ const App = () => (
       <p className="header-subtitle">templates</p>
     </header>
     <main>
-      <p>All the Create InstantSearch App templates available on CodeSandbox here:</p>
+      <p>
+        All the Create InstantSearch App templates available on
+        CodeSandbox here:
+      </p>
       <Fetch url={url}>
         {({ data, error, failed }) =>
           !failed && data ? (
