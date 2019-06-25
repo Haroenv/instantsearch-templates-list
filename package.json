@@ -5,18 +5,15 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
-    "react": "16.3.2",
-    "react-dom": "16.3.2",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
     "react-request": "3.1.2",
-    "react-scripts": "1.1.4",
-    "serve": "^9.4.0"
+    "react-scripts": "1.1.4"
   },
   "devDependencies": {},
   "scripts": {
     "start": "react-scripts start",
-    "now-start": "serve --single ./build",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom"
   }
 }
