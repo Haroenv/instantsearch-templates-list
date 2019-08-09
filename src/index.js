@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Fetch } from 'react-request';
+import { Fetch as OriginalFetch } from 'react-request';
+import netlify from 'netlify-auth-providers';
 import './styles.css';
 
 const templatesRoot =
@@ -10,6 +11,36 @@ const codeSamplesRoot =
 
 const getExamplesUrl = repo =>
   `https://api.github.com/repos/algolia/${repo}/contents/examples`;
+
+const Fetch = ({ token, url, ...props }) => {
+  return (
+    <OriginalFetch
+      headers={
+        token ? { Authorization: `token ${token}` } : undefined
+      }
+      // react-request has a dumb cache that doesn't take headers in account!
+      url={url + (token ? (url.includes('?') ? '&' : '?') : '')}
+      {...props}
+    />
+  );
+};
+
+function authWithGitHub() {
+  return new Promise((resolve, reject) => {
+    var authenticator = new netlify({
+      site_id: '4c56efd1-3c5f-4e55-a88d-e63d3197807f',
+    });
+    authenticator.authenticate({ provider: 'github' }, function(
+      err,
+      data
+    ) {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+}
 
 const Error = ({ failed, error, data }) =>
   failed ? (
@@ -125,88 +156,54 @@ const Listing = ({ data }) => (
   </ul>
 );
 
-const App = () => (
-  <Fragment>
-    <header className="header">
-      <h1 className="header-title">
-        <a href="/">Create InstantSearch App</a>
-      </h1>
-      <p className="header-subtitle">templates</p>
-    </header>
-    <main>
-      <section>
-        <h2>
-          All the Create InstantSearch App templates available on
-          CodeSandbox here:
-        </h2>
-        <Fetch url={templatesRoot}>
-          {({ data, error, failed }) =>
-            !failed && data ? (
-              <Listing data={dataToSandboxes(data)} />
-            ) : (
-              <Error error={error} data={data} failed={failed} />
-            )
-          }
-        </Fetch>
-      </section>
-      <section>
-        <h2>
-          All the documentation code samples available on CodeSandbox
-          here:
-        </h2>
-        <Fetch url={codeSamplesRoot}>
-          {({ data, error, failed }) =>
-            !failed && data && data.tree ? (
-              data.tree
-                .filter(
-                  node =>
-                    node.type === 'tree' && node.path !== '.circleci'
-                )
-                .map(node => (
-                  <section key={node.sha}>
-                    <h3>{node.path}</h3>
-                    <Fetch url={node.url}>
-                      {({ data, error, failed }) =>
-                        !failed && data && data.tree ? (
-                          <Listing
-                            data={childToSandboxes(data, node)}
-                          />
-                        ) : (
-                          <Error
-                            error={error}
-                            data={data}
-                            failed={failed}
-                          />
-                        )
-                      }
-                    </Fetch>
-                  </section>
-                ))
-            ) : (
-              <Error error={error} data={data} failed={failed} />
-            )
-          }
-        </Fetch>
-      </section>
-      <section>
-        <h2>Examples from within the repos:</h2>
+const Auth = ({ onAuth = () => {} }) => {
+  const [status, setStatus] = useState('');
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <button
+        onClick={() => {
+          authWithGitHub()
+            .then(({ token }) => {
+              setStatus('✓');
+              onAuth(token);
+              localStorage.setItem('github-token', token);
+            })
+            .catch(err => {
+              console.log(err);
+              setStatus('𐄂 ' + err.message);
+            });
+        }}
+      >
+        Authenticate to GitHub {status}
+      </button>
+    </div>
+  );
+};
+
+const App = () => {
+  const [token, setToken] = React.useState(
+    localStorage.getItem('github-token')
+  );
+  console.log(token);
+  return (
+    <Fragment>
+      <header className="header">
+        <h1 className="header-title">
+          <a href="/">Create InstantSearch App</a>
+        </h1>
+        <p className="header-subtitle">templates</p>
+      </header>
+      <Auth onAuth={setToken} />
+      <main>
         <section>
-          <h3>InstantSearch.js</h3>
-          <Fetch url={getExamplesUrl('instantsearch.js')}>
+          <h2>
+            All the Create InstantSearch App templates available on
+            CodeSandbox here:
+          </h2>
+          <Fetch url={templatesRoot} token={token}>
             {({ data, error, failed }) =>
               !failed && data ? (
-                <Listing
-                  data={data.map(({ name, html_url }) => ({
-                    name: name,
-                    url: html_url.replace(
-                      'github.com',
-                      'codesandbox.io/s/github'
-                    ),
-                    id: 'instantsearch.js',
-                    native: false,
-                    repo: html_url,
-                  }))}
-                />
+                <Listing data={dataToSandboxes(data)} />
               ) : (
                 <Error error={error} data={data} failed={failed} />
               )
@@ -214,22 +211,39 @@ const App = () => (
           </Fetch>
         </section>
         <section>
-          <h3>Angular InstantSearch</h3>
-          <Fetch url={getExamplesUrl('angular-instantsearch')}>
+          <h2>
+            All the documentation code samples available on
+            CodeSandbox here:
+          </h2>
+          <Fetch url={codeSamplesRoot} token={token}>
             {({ data, error, failed }) =>
-              !failed && data ? (
-                <Listing
-                  data={data.map(({ name, html_url }) => ({
-                    name: name,
-                    url: html_url.replace(
-                      'github.com',
-                      'codesandbox.io/s/github'
-                    ),
-                    id: 'angular-instantsearch',
-                    native: false,
-                    repo: html_url,
-                  }))}
-                />
+              !failed && data && data.tree ? (
+                data.tree
+                  .filter(
+                    node =>
+                      node.type === 'tree' &&
+                      node.path !== '.circleci'
+                  )
+                  .map(node => (
+                    <section key={node.sha}>
+                      <h3>{node.path}</h3>
+                      <Fetch url={node.url} token={token}>
+                        {({ data, error, failed }) =>
+                          !failed && data && data.tree ? (
+                            <Listing
+                              data={childToSandboxes(data, node)}
+                            />
+                          ) : (
+                            <Error
+                              error={error}
+                              data={data}
+                              failed={failed}
+                            />
+                          )
+                        }
+                      </Fetch>
+                    </section>
+                  ))
               ) : (
                 <Error error={error} data={data} failed={failed} />
               )
@@ -237,57 +251,118 @@ const App = () => (
           </Fetch>
         </section>
         <section>
-          <h3>React InstantSearch</h3>
-          <Fetch url={getExamplesUrl('react-instantsearch')}>
-            {({ data, error, failed }) =>
-              !failed && data ? (
-                <Listing
-                  data={data.map(({ name, html_url }) => ({
-                    name: name,
-                    url: html_url.replace(
-                      'github.com',
-                      'codesandbox.io/s/github'
-                    ),
-                    id: 'react-instantsearch',
-                    native: false,
-                    repo: html_url,
-                  }))}
-                />
-              ) : (
-                <Error error={error} data={data} failed={failed} />
-              )
-            }
-          </Fetch>
-        </section>
-        <section>
-          <h3>Vue InstantSearch</h3>
-          <Fetch url={getExamplesUrl('vue-instantsearch')}>
-            {({ data, error, failed }) =>
-              !failed && data ? (
-                <Listing
-                  data={data
-                    .filter(({ type }) => type === 'dir')
-                    .map(({ name, html_url }) => ({
+          <h2>Examples from within the repos:</h2>
+          <section>
+            <h3>InstantSearch.js</h3>
+            <Fetch
+              url={getExamplesUrl('instantsearch.js')}
+              token={token}
+            >
+              {({ data, error, failed }) =>
+                !failed && data ? (
+                  <Listing
+                    data={data.map(({ name, html_url }) => ({
                       name: name,
                       url: html_url.replace(
                         'github.com',
                         'codesandbox.io/s/github'
                       ),
-                      id: 'vue-instantsearch',
+                      id: 'instantsearch.js',
                       native: false,
                       repo: html_url,
                     }))}
-                />
-              ) : (
-                <Error error={error} data={data} failed={failed} />
-              )
-            }
-          </Fetch>
+                  />
+                ) : (
+                  <Error error={error} data={data} failed={failed} />
+                )
+              }
+            </Fetch>
+          </section>
+          <section>
+            <h3>Angular InstantSearch</h3>
+            <Fetch
+              url={getExamplesUrl('angular-instantsearch')}
+              token={token}
+            >
+              {({ data, error, failed }) =>
+                !failed && data ? (
+                  <Listing
+                    data={data.map(({ name, html_url }) => ({
+                      name: name,
+                      url: html_url.replace(
+                        'github.com',
+                        'codesandbox.io/s/github'
+                      ),
+                      id: 'angular-instantsearch',
+                      native: false,
+                      repo: html_url,
+                    }))}
+                  />
+                ) : (
+                  <Error error={error} data={data} failed={failed} />
+                )
+              }
+            </Fetch>
+          </section>
+          <section>
+            <h3>React InstantSearch</h3>
+            <Fetch
+              url={getExamplesUrl('react-instantsearch')}
+              token={token}
+            >
+              {({ data, error, failed }) =>
+                !failed && data ? (
+                  <Listing
+                    data={data.map(({ name, html_url }) => ({
+                      name: name,
+                      url: html_url.replace(
+                        'github.com',
+                        'codesandbox.io/s/github'
+                      ),
+                      id: 'react-instantsearch',
+                      native: false,
+                      repo: html_url,
+                    }))}
+                  />
+                ) : (
+                  <Error error={error} data={data} failed={failed} />
+                )
+              }
+            </Fetch>
+          </section>
+          <section>
+            <h3>Vue InstantSearch</h3>
+            <Fetch
+              url={getExamplesUrl('vue-instantsearch')}
+              token={token}
+            >
+              {({ data, error, failed }) =>
+                !failed && data ? (
+                  <Listing
+                    data={data
+                      .filter(({ type }) => type === 'dir')
+                      .map(({ name, html_url }) => ({
+                        name: name,
+                        url: html_url.replace(
+                          'github.com',
+                          'codesandbox.io/s/github'
+                        ),
+                        id: 'vue-instantsearch',
+                        native: false,
+                        repo: html_url,
+                      }))}
+                  />
+                ) : (
+                  <Error error={error} data={data} failed={failed} />
+                )
+              }
+            </Fetch>
+          </section>
         </section>
-      </section>
-    </main>
-  </Fragment>
-);
+      </main>
+    </Fragment>
+  );
+};
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);

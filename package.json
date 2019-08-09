@@ -5,6 +5,7 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "netlify-auth-providers": "^1.0.0-alpha5",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-request": "3.1.2",
