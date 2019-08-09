@@ -8,31 +8,8 @@ const templatesRoot =
 const codeSamplesRoot =
   'https://api.github.com/repos/algolia/doc-code-samples/git/trees/master';
 
-const getCodeSamples = () =>
-  fetch(
-    'https://api.github.com/repos/algolia/doc-code-samples/git/trees/master'
-  )
-    .then(res => res.json())
-    .then(res => {
-      if (!res.tree) {
-        return [];
-      }
-      return res.tree
-        .filter(
-          node => node.type === 'tree' && node.path !== '.circleci'
-        )
-        .map(node =>
-          fetch(node.url)
-            .then(res => res.json())
-            .then(child => ({
-              parent: node,
-              child: child,
-            }))
-        );
-    })
-    .then(folders => Promise.all(folders));
-
-window.getCodeSamples = getCodeSamples;
+const getExamplesUrl = repo =>
+  `https://api.github.com/repos/algolia/${repo}/contents/examples`;
 
 const Error = ({ failed, error, data }) =>
   failed ? (
@@ -57,6 +34,7 @@ const images = {
   'vue-instantsearch': 'vue-instantsearch.svg',
   fallback: 'algolia.svg',
 };
+
 const Sandbox = ({ name, url, id, native, repo }) => (
   <div className={`sandbox ${native ? 'native' : ''}`}>
     <a href={native ? repo : url} target="_blank">
@@ -104,7 +82,7 @@ const dataToSandboxes = data =>
 const childToSandboxes = (data, parent) =>
   data.tree
     .filter(({ type }) => type === 'tree')
-    .map(({ path, sha, url }) => {
+    .map(({ path, url }) => {
       const repository = new URL(url).pathname.split('/').slice(2, 4);
 
       const pathname = [
@@ -209,6 +187,103 @@ const App = () => (
             )
           }
         </Fetch>
+      </section>
+      <section>
+        <h2>Examples from within the repos:</h2>
+        <section>
+          <h3>InstantSearch.js</h3>
+          <Fetch url={getExamplesUrl('instantsearch.js')}>
+            {({ data, error, failed }) =>
+              !failed && data ? (
+                <Listing
+                  data={data.map(({ name, html_url }) => ({
+                    name: name,
+                    url: html_url.replace(
+                      'github.com',
+                      'codesandbox.io/s/github'
+                    ),
+                    id: 'instantsearch.js',
+                    native: false,
+                    repo: html_url,
+                  }))}
+                />
+              ) : (
+                <Error error={error} data={data} failed={failed} />
+              )
+            }
+          </Fetch>
+        </section>
+        <section>
+          <h3>Angular InstantSearch</h3>
+          <Fetch url={getExamplesUrl('angular-instantsearch')}>
+            {({ data, error, failed }) =>
+              !failed && data ? (
+                <Listing
+                  data={data.map(({ name, html_url }) => ({
+                    name: name,
+                    url: html_url.replace(
+                      'github.com',
+                      'codesandbox.io/s/github'
+                    ),
+                    id: 'angular-instantsearch',
+                    native: false,
+                    repo: html_url,
+                  }))}
+                />
+              ) : (
+                <Error error={error} data={data} failed={failed} />
+              )
+            }
+          </Fetch>
+        </section>
+        <section>
+          <h3>React InstantSearch</h3>
+          <Fetch url={getExamplesUrl('react-instantsearch')}>
+            {({ data, error, failed }) =>
+              !failed && data ? (
+                <Listing
+                  data={data.map(({ name, html_url }) => ({
+                    name: name,
+                    url: html_url.replace(
+                      'github.com',
+                      'codesandbox.io/s/github'
+                    ),
+                    id: 'react-instantsearch',
+                    native: false,
+                    repo: html_url,
+                  }))}
+                />
+              ) : (
+                <Error error={error} data={data} failed={failed} />
+              )
+            }
+          </Fetch>
+        </section>
+        <section>
+          <h3>Vue InstantSearch</h3>
+          <Fetch url={getExamplesUrl('vue-instantsearch')}>
+            {({ data, error, failed }) =>
+              !failed && data ? (
+                <Listing
+                  data={data
+                    .filter(({ type }) => type === 'dir')
+                    .map(({ name, html_url }) => ({
+                      name: name,
+                      url: html_url.replace(
+                        'github.com',
+                        'codesandbox.io/s/github'
+                      ),
+                      id: 'vue-instantsearch',
+                      native: false,
+                      repo: html_url,
+                    }))}
+                />
+              ) : (
+                <Error error={error} data={data} failed={failed} />
+              )
+            }
+          </Fetch>
+        </section>
       </section>
     </main>
   </Fragment>
