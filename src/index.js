@@ -252,112 +252,42 @@ const App = () => {
         </section>
         <section>
           <h2>Examples from within the repos:</h2>
-          <section>
-            <h3>InstantSearch.js</h3>
-            <Fetch
-              url={getExamplesUrl('instantsearch.js')}
-              token={token}
-            >
-              {({ data, error, failed }) =>
-                !failed && data ? (
-                  <Listing
-                    data={data.map(({ name, html_url }) => ({
-                      name: name,
-                      url: html_url.replace(
-                        'github.com',
-                        'codesandbox.io/s/github'
-                      ),
-                      id: 'instantsearch.js',
-                      native: false,
-                      repo: html_url,
-                    }))}
-                  />
-                ) : (
-                  <Error error={error} data={data} failed={failed} />
-                )
-              }
-            </Fetch>
-          </section>
-          <section>
-            <h3>Angular InstantSearch</h3>
-            <Fetch
-              url={getExamplesUrl('angular-instantsearch')}
-              token={token}
-            >
-              {({ data, error, failed }) =>
-                !failed && data ? (
-                  <Listing
-                    data={data.map(({ name, html_url }) => ({
-                      name: name,
-                      url: html_url.replace(
-                        'github.com',
-                        'codesandbox.io/s/github'
-                      ),
-                      id: 'angular-instantsearch',
-                      native: false,
-                      repo: html_url,
-                    }))}
-                  />
-                ) : (
-                  <Error error={error} data={data} failed={failed} />
-                )
-              }
-            </Fetch>
-          </section>
-          <section>
-            <h3>React InstantSearch</h3>
-            <Fetch
-              url={getExamplesUrl('react-instantsearch')}
-              token={token}
-            >
-              {({ data, error, failed }) =>
-                !failed && data ? (
-                  <Listing
-                    data={data.map(({ name, html_url }) => ({
-                      name: name,
-                      url: html_url.replace(
-                        'github.com',
-                        'codesandbox.io/s/github'
-                      ),
-                      id: 'react-instantsearch',
-                      native: false,
-                      repo: html_url,
-                    }))}
-                  />
-                ) : (
-                  <Error error={error} data={data} failed={failed} />
-                )
-              }
-            </Fetch>
-          </section>
-          <section>
-            <h3>Vue InstantSearch</h3>
-            <Fetch
-              url={getExamplesUrl('vue-instantsearch')}
-              token={token}
-            >
-              {({ data, error, failed }) =>
-                !failed && data ? (
-                  <Listing
-                    data={data
-                      .filter(({ type }) => type === 'dir')
-                      .map(({ name, html_url }) => ({
-                        name: name,
-                        url: html_url.replace(
-                          'github.com',
-                          'codesandbox.io/s/github'
-                        ),
-                        id: 'vue-instantsearch',
-                        native: false,
-                        repo: html_url,
-                      }))}
-                  />
-                ) : (
-                  <Error error={error} data={data} failed={failed} />
-                )
-              }
-            </Fetch>
-          </section>
+          {[
+            'instantsearch.js',
+            'angular-instantsearch',
+            'react-instantsearch',
+            'vue-instantsearch',
+          ].map(lib => (
+            <section>
+              <h3>{lib}</h3>
+              <Fetch url={getExamplesUrl(lib)} token={token}>
+                {({ data, error, failed }) =>
+                  !failed && data ? (
+                    <Listing
+                      data={data
+                        .filter(({ type }) => type === 'dir')
+                        .map(({ name, html_url }) => ({
+                          name: name,
+                          url: html_url.replace(
+                            'github.com',
+                            'codesandbox.io/s/github'
+                          ),
+                          id: lib,
+                          native: false,
+                          repo: html_url,
+                        }))}
+                    />
+                  ) : (
+                    <Error
+                      error={error}
+                      data={data}
+                      failed={failed}
+                    />
+                  )
+                }
+              </Fetch>
+            </section>
+          ))}
         </section>
       </main>
     </Fragment>
