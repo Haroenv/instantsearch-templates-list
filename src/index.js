@@ -9,7 +9,7 @@ const templatesRoot =
 const codeSamplesRoot =
   'https://api.github.com/repos/algolia/doc-code-samples/git/trees/master';
 
-const getExamplesUrl = repo =>
+const getExamplesUrl = (repo) =>
   `https://api.github.com/repos/algolia/${repo}/contents/examples`;
 
 const Fetch = ({ token, url, ...props }) => {
@@ -30,7 +30,7 @@ function authWithGitHub() {
     var authenticator = new netlify({
       site_id: '4c56efd1-3c5f-4e55-a88d-e63d3197807f',
     });
-    authenticator.authenticate({ provider: 'github' }, function(
+    authenticator.authenticate({ provider: 'github' }, function (
       err,
       data
     ) {
@@ -82,15 +82,15 @@ const nativeLibraries = [
   'React InstantSearch Native',
 ];
 
-const titleCase = str =>
+const titleCase = (str) =>
   str
     .split('-')
-    .map(s => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
+    .map((s) => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
     .join(' ');
 
-const kebabCase = str => str.replace(/ /g, '-').toLocaleLowerCase();
+const kebabCase = (str) => str.replace(/ /g, '-').toLocaleLowerCase();
 
-const dataToSandboxes = data =>
+const dataToSandboxes = (data) =>
   data
     .filter(({ type }) => type === 'dir')
     .map(({ html_url, name }) => ({
@@ -168,7 +168,7 @@ const Auth = ({ onAuth = () => {} }) => {
               onAuth(token);
               localStorage.setItem('github-token', token);
             })
-            .catch(err => {
+            .catch((err) => {
               console.log(err);
               setStatus('𐄂 ' + err.message);
             });
@@ -211,6 +211,26 @@ const App = () => {
           </Fetch>
         </section>
         <section>
+          <h2>Custom templates are available on CodeSandbox here:</h2>
+
+          <Listing
+            data={[
+              {
+                id: 'instantsearch.js',
+                name: 'Magento 1',
+                url: 'https://github.com/Haroenv/magento1-algolia-frontend-demo'.replace(
+                  'github.com',
+                  'codesandbox.io/s/github'
+                ),
+                native: false,
+                instantsearch: true,
+                repo:
+                  'https://github.com/Haroenv/magento1-algolia-frontend-demo',
+              },
+            ]}
+          />
+        </section>
+        <section>
           <h2>
             All the documentation code samples available on
             CodeSandbox here:
@@ -220,11 +240,11 @@ const App = () => {
               !failed && data && data.tree ? (
                 data.tree
                   .filter(
-                    node =>
+                    (node) =>
                       node.type === 'tree' &&
                       node.path !== '.circleci'
                   )
-                  .map(node => (
+                  .map((node) => (
                     <section key={node.sha}>
                       <h3>{node.path}</h3>
                       <Fetch url={node.url} token={token}>
@@ -257,7 +277,7 @@ const App = () => {
             'angular-instantsearch',
             'react-instantsearch',
             'vue-instantsearch',
-          ].map(lib => (
+          ].map((lib) => (
             <section>
               <h3>{lib}</h3>
               <Fetch url={getExamplesUrl(lib)} token={token}>
