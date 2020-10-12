@@ -227,6 +227,15 @@ const App = () => {
                 repo:
                   'https://github.com/Haroenv/magento1-algolia-frontend-demo',
               },
+              {
+                id: 'instantsearch.js',
+                name: 'Shopify',
+                url: 'https://codesandbox.io/s/praagyajoshialgolia-shopify-sandbox-oxx8q',
+                native: false,
+                instantsearch: true,
+                repo:
+                  'https://github.com/praagyajoshi/algolia-shopify-sandbox',
+              }
             ]}
           />
         </section>
