@@ -55,8 +55,8 @@ const Error = ({ failed, error, data }) =>
 const images = {
   'angular-instantsearch': 'angular-instantsearch.svg',
   // @TODO: better image
-  'autocomplete.js': 'autocomplete.png',
-  autocomplete: 'autocomplete.png',
+  'autocomplete.js': 'autocomplete.svg',
+  autocomplete: 'autocomplete.svg',
   'instantsearch-android': 'instantsearch-android.svg',
   'instantsearch-ios': 'instantsearch-ios.svg',
   'instantsearch.js': 'instantsearch.js.svg',
