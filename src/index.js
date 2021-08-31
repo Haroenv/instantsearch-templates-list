@@ -88,7 +88,10 @@ const upperCaseFirstLetter = (str) =>
   str.slice(0, 1).toLocaleUpperCase() + str.slice(1);
 
 const sentenceCase = (str) =>
-  upperCaseFirstLetter(str.replace(/-/g, ' '));
+  upperCaseFirstLetter(str.replace(/-/g, ' ')).replace(
+    /e commerce/i,
+    'e-commerce'
+  );
 
 const kebabCase = (str) => str.replace(/ /g, '-').toLocaleLowerCase();
 
