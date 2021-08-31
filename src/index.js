@@ -84,11 +84,11 @@ const nativeLibraries = [
   'React InstantSearch Native',
 ];
 
-const titleCase = (str) =>
-  str
-    .split('-')
-    .map((s) => s.slice(0, 1).toLocaleUpperCase() + s.slice(1))
-    .join(' ');
+const upperCaseFirstLetter = (str) =>
+  str.slice(0, 1).toLocaleUpperCase() + str.slice(1);
+
+const sentenceCase = (str) =>
+  upperCaseFirstLetter(str.replace(/-/g, ' '));
 
 const kebabCase = (str) => str.replace(/ /g, '-').toLocaleLowerCase();
 
@@ -97,7 +97,7 @@ const dataToSandboxes = (data) =>
     .filter(({ type }) => type === 'dir')
     .map(({ html_url, name }) => ({
       id: name.replace(/-\d\.x/, ''),
-      name: titleCase(name)
+      name: sentenceCase(name)
         .replace(/InstantSearch/i, 'InstantSearch')
         .replace(/JavaScript/i, 'JavaScript')
         .replace(/iOS/i, 'iOS'),
@@ -134,7 +134,7 @@ const childToSandboxes = (data, parent) =>
 
       return {
         id: kebabCase(parent.path),
-        name: titleCase(path),
+        name: sentenceCase(path),
         url: sandbox,
         native: nativeLibraries.includes(parent.path),
         instantsearch: parent.path.includes('instantsearch'),
@@ -297,7 +297,7 @@ const App = () => {
                       data={data
                         .filter(({ type }) => type === 'dir')
                         .map(({ name, html_url }) => ({
-                          name: name,
+                          name: sentenceCase(name),
                           url: html_url.replace(
                             'github.com',
                             'codesandbox.io/s/github'
