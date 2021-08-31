@@ -88,10 +88,11 @@ const upperCaseFirstLetter = (str) =>
   str.slice(0, 1).toLocaleUpperCase() + str.slice(1);
 
 const sentenceCase = (str) =>
-  upperCaseFirstLetter(str.replace(/-/g, ' ')).replace(
-    /e commerce/i,
-    'e-commerce'
-  );
+  upperCaseFirstLetter(str.replace(/-/g, ' '))
+    .replace(/e commerce/i, 'e-commerce')
+    .replace(/InstantSearch/i, 'InstantSearch')
+    .replace(/JavaScript/i, 'JavaScript')
+    .replace(/iOS/i, 'iOS');
 
 const kebabCase = (str) => str.replace(/ /g, '-').toLocaleLowerCase();
 
@@ -100,10 +101,7 @@ const dataToSandboxes = (data) =>
     .filter(({ type }) => type === 'dir')
     .map(({ html_url, name }) => ({
       id: name.replace(/-\d\.x/, ''),
-      name: sentenceCase(name)
-        .replace(/InstantSearch/i, 'InstantSearch')
-        .replace(/JavaScript/i, 'JavaScript')
-        .replace(/iOS/i, 'iOS'),
+      name: sentenceCase(name),
       url: html_url.replace('github.com', 'codesandbox.io/s/github'),
       native: nativeLibraries.includes(name),
       instantsearch: name.includes('instantsearch'),
