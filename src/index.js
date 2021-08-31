@@ -54,7 +54,9 @@ const Error = ({ failed, error, data }) =>
 
 const images = {
   'angular-instantsearch': 'angular-instantsearch.svg',
-  'autocomplete.js': undefined,
+  // @TODO: better image
+  'autocomplete.js': 'autocomplete.png',
+  autocomplete: 'autocomplete.png',
   'instantsearch-android': 'instantsearch-android.svg',
   'instantsearch-ios': 'instantsearch-ios.svg',
   'instantsearch.js': 'instantsearch.js.svg',
@@ -280,6 +282,7 @@ const App = () => {
         <section>
           <h2>Examples from within the repos:</h2>
           {[
+            'autocomplete',
             'instantsearch.js',
             'angular-instantsearch',
             'react-instantsearch',
