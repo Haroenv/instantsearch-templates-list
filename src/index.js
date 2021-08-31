@@ -30,15 +30,15 @@ function authWithGitHub() {
     var authenticator = new netlify({
       site_id: '4c56efd1-3c5f-4e55-a88d-e63d3197807f',
     });
-    authenticator.authenticate({ provider: 'github' }, function (
-      err,
-      data
-    ) {
-      if (err) {
-        reject(err);
+    authenticator.authenticate(
+      { provider: 'github' },
+      function (err, data) {
+        if (err) {
+          reject(err);
+        }
+        resolve(data);
       }
-      resolve(data);
-    });
+    );
   });
 }
 
@@ -224,8 +224,7 @@ const App = () => {
                 ),
                 native: false,
                 instantsearch: true,
-                repo:
-                  'https://github.com/Haroenv/magento1-algolia-frontend-demo',
+                repo: 'https://github.com/Haroenv/magento1-algolia-frontend-demo',
               },
               {
                 id: 'instantsearch.js',
@@ -233,9 +232,8 @@ const App = () => {
                 url: 'https://codesandbox.io/s/praagyajoshialgolia-shopify-sandbox-oxx8q',
                 native: false,
                 instantsearch: true,
-                repo:
-                  'https://github.com/praagyajoshi/algolia-shopify-sandbox',
-              }
+                repo: 'https://github.com/praagyajoshi/algolia-shopify-sandbox',
+              },
             ]}
           />
         </section>
