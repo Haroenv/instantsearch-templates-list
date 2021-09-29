@@ -237,6 +237,14 @@ const App = () => {
                 instantsearch: true,
                 repo: 'https://github.com/praagyajoshi/algolia-shopify-sandbox',
               },
+              {
+                id: 'instantsearch.js',
+                name: 'Dynamic Widgets',
+                url: 'https://codesandbox.io/s/dynamicwidgets-855j6',
+                native: false,
+                instantsearch: true,
+                repo: 'https://codesandbox.io/s/dynamicwidgets-855j6',
+              },
             ]}
           />
         </section>
