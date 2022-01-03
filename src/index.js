@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Fetch as OriginalFetch } from 'react-request';
 import netlify from 'netlify-auth-providers';
@@ -42,15 +42,20 @@ function authWithGitHub() {
   });
 }
 
-const Error = ({ failed, error, data }) =>
-  failed ? (
+const Error = ({ failed, error, data }) => {
+  if (!failed) {
+    return null;
+  }
+
+  return (
     <div className="error">
       Error:{' '}
       <code>
         {error ? error.message : data ? data.message : 'unknown'}
       </code>
     </div>
-  ) : null;
+  );
+};
 
 const images = {
   'angular-instantsearch': 'angular-instantsearch.svg',
@@ -187,7 +192,14 @@ const App = () => {
   const [token, setToken] = React.useState(
     localStorage.getItem('github-token')
   );
-  console.log(token);
+
+  useEffect(() => {
+    if (token && token.indexOf('gho_') !== 0) {
+      localStorage.removeItem('github-token');
+      setToken(null);
+    }
+  }, [token]);
+
   return (
     <Fragment>
       <header className="header">
