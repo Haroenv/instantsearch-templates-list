@@ -5,12 +5,21 @@ import netlify from 'netlify-auth-providers';
 import './styles.css';
 
 const templatesRoot =
-  'https://api.github.com/repos/algolia/create-instantsearch-app/contents?ref=templates';
+  'https://api.github.com/repos/algolia/instantsearch.js/contents?ref=templates';
 const codeSamplesRoot =
   'https://api.github.com/repos/algolia/doc-code-samples/git/trees/master';
 
-const getExamplesUrl = (repo) =>
-  `https://api.github.com/repos/algolia/${repo}/contents/examples`;
+const examplesSubfolders = {
+  'instantsearch.js': 'js',
+};
+
+const getExamplesUrl = (repo) => {
+  const examplesSubfolder = examplesSubfolders[repo];
+  if (examplesSubfolder) {
+    return `https://api.github.com/repos/algolia/instantsearch.js/contents/examples/${examplesSubfolder}`;
+  }
+  return `https://api.github.com/repos/algolia/${repo}/contents/examples`;
+};
 
 const Fetch = ({ token, url, ...props }) => {
   return (
