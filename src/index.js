@@ -80,6 +80,7 @@ const images = {
   'javascript-client': undefined,
   'javascript-helper': undefined,
   'react-instantsearch-native': 'react-instantsearch.svg',
+  'react-instantsearch-hooks': 'react-instantsearch.svg',
   'react-instantsearch': 'react-instantsearch.svg',
   'vue-instantsearch': 'vue-instantsearch.svg',
   fallback: 'algolia.svg',
