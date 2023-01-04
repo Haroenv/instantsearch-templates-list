@@ -11,12 +11,15 @@ const codeSamplesRoot =
 
 const examplesSubfolders = {
   'instantsearch.js': 'js',
+  'vue-instantsearch': 'vue',
+  'react-instantsearch': 'react',
+  'react-instantsearch-hooks': 'react-hooks',
 };
 
 const getExamplesUrl = (repo) => {
   const examplesSubfolder = examplesSubfolders[repo];
   if (examplesSubfolder) {
-    return `https://api.github.com/repos/algolia/instantsearch.js/contents/examples/${examplesSubfolder}`;
+    return `https://api.github.com/repos/algolia/instantsearch/contents/examples/${examplesSubfolder}`;
   }
   return `https://api.github.com/repos/algolia/${repo}/contents/examples`;
 };
@@ -314,9 +317,10 @@ const App = () => {
           {[
             'autocomplete',
             'instantsearch.js',
-            'angular-instantsearch',
             'react-instantsearch',
+            'react-instantsearch-hooks',
             'vue-instantsearch',
+            'angular-instantsearch',
           ].map((lib) => (
             <section>
               <h3>{lib}</h3>
