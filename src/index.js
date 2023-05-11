@@ -80,6 +80,7 @@ const images = {
   'javascript-client': undefined,
   'javascript-helper': undefined,
   'react-instantsearch-native': 'react-instantsearch.svg',
+  'react-instantsearch-hooks-native': 'react-instantsearch.svg',
   'react-instantsearch-hooks': 'react-instantsearch.svg',
   'react-instantsearch': 'react-instantsearch.svg',
   'vue-instantsearch': 'vue-instantsearch.svg',
@@ -100,6 +101,7 @@ const nativeLibraries = [
   'instantsearch-ios',
   'react-instantsearch-native',
   'React InstantSearch Native',
+  'react-instantsearch-hooks-native',
 ];
 
 const upperCaseFirstLetter = (str) =>
@@ -154,6 +156,7 @@ const childToSandboxes = (data, parent) =>
       return {
         id: kebabCase(parent.path),
         name: sentenceCase(path),
+        rawName: path,
         url: sandbox,
         native: nativeLibraries.includes(parent.path),
         instantsearch: parent.path.includes('instantsearch'),
@@ -161,19 +164,21 @@ const childToSandboxes = (data, parent) =>
       };
     });
 
-const Listing = ({ data }) => (
+const Listing = ({ data, ignore }) => (
   <ul className="listing">
-    {data.map(({ name, url, id, native, repo }) => (
-      <li key={name} className="listing-item">
-        <Sandbox
-          name={name}
-          url={url}
-          id={id}
-          native={native}
-          repo={repo}
-        />
-      </li>
-    ))}
+    {data
+      .filter(({ rawName }) => !ignore || !ignore.includes(rawName))
+      .map(({ name, url, id, native, repo }) => (
+        <li key={name} className="listing-item">
+          <Sandbox
+            name={name}
+            url={url}
+            id={id}
+            native={native}
+            repo={repo}
+          />
+        </li>
+      ))}
   </ul>
 );
 
@@ -295,6 +300,15 @@ const App = () => {
                           !failed && data && data.tree ? (
                             <Listing
                               data={childToSandboxes(data, node)}
+                              ignore={[
+                                'e-commerce',
+                                'media',
+                                'nuxt',
+                                'places',
+                                ...(!node.path.includes('native')
+                                  ? ['getting-started']
+                                  : []),
+                              ]}
                             />
                           ) : (
                             <Error
@@ -318,8 +332,8 @@ const App = () => {
           {[
             'autocomplete',
             'instantsearch.js',
-            'react-instantsearch',
             'react-instantsearch-hooks',
+            'react-instantsearch',
             'vue-instantsearch',
             'angular-instantsearch',
           ].map((lib) => (
