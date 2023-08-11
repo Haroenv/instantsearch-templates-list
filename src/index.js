@@ -13,7 +13,6 @@ const examplesSubfolders = {
   'instantsearch.js': 'js',
   'vue-instantsearch': 'vue',
   'react-instantsearch': 'react',
-  'react-instantsearch-hooks': 'react-hooks',
 };
 
 const getExamplesUrl = (repo) => {
@@ -80,8 +79,6 @@ const images = {
   'javascript-client': undefined,
   'javascript-helper': undefined,
   'react-instantsearch-native': 'react-instantsearch.svg',
-  'react-instantsearch-hooks-native': 'react-instantsearch.svg',
-  'react-instantsearch-hooks': 'react-instantsearch.svg',
   'react-instantsearch': 'react-instantsearch.svg',
   'vue-instantsearch': 'vue-instantsearch.svg',
   fallback: 'algolia.svg',
@@ -101,7 +98,6 @@ const nativeLibraries = [
   'instantsearch-ios',
   'react-instantsearch-native',
   'React InstantSearch Native',
-  'react-instantsearch-hooks-native',
 ];
 
 const upperCaseFirstLetter = (str) =>
@@ -332,7 +328,6 @@ const App = () => {
           {[
             'autocomplete',
             'instantsearch.js',
-            'react-instantsearch-hooks',
             'react-instantsearch',
             'vue-instantsearch',
             'angular-instantsearch',
