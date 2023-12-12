@@ -84,12 +84,39 @@ const images = {
   fallback: 'algolia.svg',
 };
 
-const Sandbox = ({ name, url, id, native, repo }) => (
+const Sandbox = ({
+  name,
+  codesandboxUrl,
+  stackblitzUrl,
+  id,
+  native,
+  repo,
+}) => (
   <div className={`sandbox ${native ? 'native' : ''}`}>
-    <a href={native ? repo : url} target="_blank">
+    <a href={native ? repo : codesandboxUrl} target="_blank">
       {name}
       <img src={images[id] || images.fallback} alt="logo" />
     </a>
+    {!native && (
+      <div className="links">
+        {codesandboxUrl && (
+          <a href={codesandboxUrl}>
+            <img
+              src="https://codesandbox.io/static/img/play-codesandbox.svg"
+              alt="Edit in CodeSandbox"
+            />
+          </a>
+        )}
+        {stackblitzUrl && (
+          <a href={stackblitzUrl}>
+            <img
+              src="https://developer.stackblitz.com/img/open_in_stackblitz_small.svg"
+              alt="Open in StackBlitz"
+            />
+          </a>
+        )}
+      </div>
+    )}
   </div>
 );
 
@@ -118,7 +145,14 @@ const dataToSandboxes = (data) =>
     .map(({ html_url, name }) => ({
       id: name.replace(/-\d\.x/, ''),
       name: sentenceCase(name),
-      url: html_url.replace('github.com', 'codesandbox.io/s/github'),
+      codesandboxUrl: html_url.replace(
+        'github.com',
+        'codesandbox.io/s/github'
+      ),
+      stackblitzUrl: html_url.replace(
+        'github.com',
+        'stackblitz.com/github'
+      ),
       native: nativeLibraries.includes(name),
       instantsearch: name.includes('instantsearch'),
       repo: html_url,
@@ -143,8 +177,13 @@ const childToSandboxes = (data, parent) =>
         path,
       ];
 
-      const sandbox = new URL('https://codesandbox.io');
-      sandbox.pathname = ['s', 'github', ...pathname].join('/');
+      const codesandboxUrl = new URL('https://codesandbox.io');
+      codesandboxUrl.pathname = ['s', 'github', ...pathname].join(
+        '/'
+      );
+
+      const stackblitzUrl = new URL('https://codesandbox.io');
+      stackblitzUrl.pathname = ['github', ...pathname].join('/');
 
       const github = new URL('https://github.com');
       github.pathname = pathname.join('/');
@@ -153,7 +192,8 @@ const childToSandboxes = (data, parent) =>
         id: kebabCase(parent.path),
         name: sentenceCase(path),
         rawName: path,
-        url: sandbox,
+        codesandboxUrl,
+        stackblitzUrl,
         native: nativeLibraries.includes(parent.path),
         instantsearch: parent.path.includes('instantsearch'),
         repo: github,
@@ -164,15 +204,9 @@ const Listing = ({ data, ignore }) => (
   <ul className="listing">
     {data
       .filter(({ rawName }) => !ignore || !ignore.includes(rawName))
-      .map(({ name, url, id, native, repo }) => (
-        <li key={name} className="listing-item">
-          <Sandbox
-            name={name}
-            url={url}
-            id={id}
-            native={native}
-            repo={repo}
-          />
+      .map((sandbox) => (
+        <li key={sandbox.name} className="listing-item">
+          <Sandbox {...sandbox} />
         </li>
       ))}
   </ul>
@@ -226,8 +260,7 @@ const App = () => {
       <main>
         <section>
           <h2>
-            All the Create InstantSearch App templates available on
-            CodeSandbox here:
+            All the Create InstantSearch App templates available here:
           </h2>
           <Fetch url={templatesRoot} token={token}>
             {({ data, error, failed }) =>
@@ -240,17 +273,23 @@ const App = () => {
           </Fetch>
         </section>
         <section>
-          <h2>Custom templates are available on CodeSandbox here:</h2>
+          <h2>Custom templates are available here:</h2>
 
           <Listing
             data={[
               {
                 id: 'instantsearch.js',
                 name: 'Magento 1',
-                url: 'https://github.com/Haroenv/magento1-algolia-frontend-demo'.replace(
-                  'github.com',
-                  'codesandbox.io/s/github'
-                ),
+                codesandboxUrl:
+                  'https://github.com/Haroenv/magento1-algolia-frontend-demo'.replace(
+                    'github.com',
+                    'codesandbox.io/s/github'
+                  ),
+                stackblitzUrl:
+                  'https://github.com/Haroenv/magento1-algolia-frontend-demo'.replace(
+                    'github.com',
+                    'stackblitz.com/github'
+                  ),
                 native: false,
                 instantsearch: true,
                 repo: 'https://github.com/Haroenv/magento1-algolia-frontend-demo',
@@ -258,7 +297,8 @@ const App = () => {
               {
                 id: 'instantsearch.js',
                 name: 'Shopify',
-                url: 'https://codesandbox.io/s/praagyajoshialgolia-shopify-sandbox-oxx8q',
+                codesandboxUrl:
+                  'https://codesandbox.io/s/praagyajoshialgolia-shopify-sandbox-oxx8q',
                 native: false,
                 instantsearch: true,
                 repo: 'https://github.com/praagyajoshi/algolia-shopify-sandbox',
@@ -266,7 +306,8 @@ const App = () => {
               {
                 id: 'instantsearch.js',
                 name: 'Dynamic Widgets',
-                url: 'https://codesandbox.io/s/dynamicwidgets-855j6',
+                codesandboxUrl:
+                  'https://codesandbox.io/s/dynamicwidgets-855j6',
                 native: false,
                 instantsearch: true,
                 repo: 'https://codesandbox.io/s/dynamicwidgets-855j6',
@@ -275,10 +316,7 @@ const App = () => {
           />
         </section>
         <section>
-          <h2>
-            All the documentation code samples available on
-            CodeSandbox here:
-          </h2>
+          <h2>All the documentation code samples available here:</h2>
           <Fetch url={codeSamplesRoot} token={token}>
             {({ data, error, failed }) =>
               !failed && data && data.tree ? (
@@ -342,9 +380,13 @@ const App = () => {
                         .filter(({ type }) => type === 'dir')
                         .map(({ name, html_url }) => ({
                           name: sentenceCase(name),
-                          url: html_url.replace(
+                          codesandboxUrl: html_url.replace(
                             'github.com',
                             'codesandbox.io/s/github'
+                          ),
+                          stackblitzUrl: html_url.replace(
+                            'github.com',
+                            'stackblitz.com/github'
                           ),
                           id: lib,
                           native: false,

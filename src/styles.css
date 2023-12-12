@@ -124,6 +124,13 @@ section + section {
   border-radius: 0.2em;
   padding: 0.5em;
   background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sandbox .links {
+  margin-top: 0.5em;
 }
 
 .sandbox.native {
@@ -138,7 +145,6 @@ section + section {
 }
 
 .sandbox a {
-  height: inherit;
   color: inherit;
   text-decoration: none;
   text-align: center;
