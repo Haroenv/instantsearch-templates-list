@@ -86,18 +86,18 @@ const images = {
 
 const Sandbox = ({
   name,
+  noSandboxes,
   codesandboxUrl,
   stackblitzUrl,
   id,
-  native,
   repo,
 }) => (
-  <div className={`sandbox ${native ? 'native' : ''}`}>
-    <a href={native ? repo : codesandboxUrl} target="_blank">
+  <div className={`sandbox ${noSandboxes ? 'noSandboxes' : ''}`}>
+    <a href={noSandboxes ? repo : codesandboxUrl} target="_blank">
       {name}
       <img src={images[id] || images.fallback} alt="logo" />
     </a>
-    {!native && (
+    {!noSandboxes && (
       <div className="links">
         {codesandboxUrl && (
           <a href={codesandboxUrl}>
@@ -153,14 +153,15 @@ const dataToSandboxes = (data) =>
         'github.com',
         'stackblitz.com/github'
       ),
-      native: nativeLibraries.includes(name),
+      noSandboxes:
+        nativeLibraries.includes(name) || name.includes('widget'),
       instantsearch: name.includes('instantsearch'),
       repo: html_url,
     }))
     .sort((a, b) =>
-      a.native === b.native
+      a.noSandboxes === b.noSandboxes
         ? b.instantsearch - a.instantsearch
-        : a.native - b.native
+        : a.noSandboxes - b.noSandboxes
     );
 
 const childToSandboxes = (data, parent) =>
@@ -194,7 +195,9 @@ const childToSandboxes = (data, parent) =>
         rawName: path,
         codesandboxUrl,
         stackblitzUrl,
-        native: nativeLibraries.includes(parent.path),
+        noSandboxes:
+          nativeLibraries.includes(parent.path) ||
+          parent.path.includes('widget'),
         instantsearch: parent.path.includes('instantsearch'),
         repo: github,
       };
@@ -290,7 +293,7 @@ const App = () => {
                     'github.com',
                     'stackblitz.com/github'
                   ),
-                native: false,
+                noSandboxes: false,
                 instantsearch: true,
                 repo: 'https://github.com/Haroenv/magento1-algolia-frontend-demo',
               },
@@ -299,7 +302,7 @@ const App = () => {
                 name: 'Shopify',
                 codesandboxUrl:
                   'https://codesandbox.io/s/praagyajoshialgolia-shopify-sandbox-oxx8q',
-                native: false,
+                noSandboxes: false,
                 instantsearch: true,
                 repo: 'https://github.com/praagyajoshi/algolia-shopify-sandbox',
               },
@@ -308,7 +311,7 @@ const App = () => {
                 name: 'Dynamic Widgets',
                 codesandboxUrl:
                   'https://codesandbox.io/s/dynamicwidgets-855j6',
-                native: false,
+                noSandboxes: false,
                 instantsearch: true,
                 repo: 'https://codesandbox.io/s/dynamicwidgets-855j6',
               },
@@ -389,7 +392,7 @@ const App = () => {
                             'stackblitz.com/github'
                           ),
                           id: lib,
-                          native: false,
+                          noSandboxes: false,
                           repo: html_url,
                         }))}
                     />
